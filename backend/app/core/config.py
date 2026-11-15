@@ -87,6 +87,12 @@ class Settings(BaseSettings):
         description="Optional development-only admin password configured via environment variables",
     )
 
+    # Database Initialization & Seeding
+    BOOTSTRAP_ON_STARTUP: bool = Field(
+        default=True,
+        description="Whether to execute database schema creation and seed checks during application startup",
+    )
+
     # Production Bootstrap Credentials (Optional; if unset in production, demo seeding is disabled)
     BOOTSTRAP_REVIEWER_PASSWORD: Optional[str] = Field(
         default=None,

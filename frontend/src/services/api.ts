@@ -141,13 +141,19 @@ async function apiRequest<T>(
 export async function checkBackendHealth(): Promise<BackendHealth> {
   const startTime = performance.now();
   try {
-    const data = await apiRequest<{
+    // Reconcile with /api/v1 prefix while maintaining backward-compatible fallback to /health
+    let data: {
       status: string;
       app_name?: string;
       version?: string;
       environment?: string;
       timestamp?: string;
-    }>('/health', { method: 'GET' }, 3000);
+    };
+    try {
+      data = await apiRequest('/api/v1/health', { method: 'GET' }, 3000);
+    } catch {
+      data = await apiRequest('/health', { method: 'GET' }, 3000);
+    }
 
     const latency = Math.round(performance.now() - startTime);
     return {

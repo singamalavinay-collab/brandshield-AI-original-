@@ -31,14 +31,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         settings.VERSION,
         settings.ENVIRONMENT,
     )
-    try:
+    if settings.BOOTSTRAP_ON_STARTUP:
         from app.core.bootstrap import bootstrap_database
         await bootstrap_database()
-    except Exception as e:
-        logger.warning(
-            "Database bootstrap skipped on startup (DB may be offline or unreachable): %s",
-            e,
-        )
     yield
     logger.info("Shutting down %s", settings.PROJECT_NAME)
 
